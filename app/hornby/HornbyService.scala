@@ -9,20 +9,21 @@ import play.api.libs.ws._
 import scala.concurrent.{ExecutionContext, Future}
 
 class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheApi, configuration: Configuration)(implicit ec: ExecutionContext) {
-  val apiKey: String = configuration.get[String]("apiKey")
+//  val apiKey: String = configuration.get[String]("apiKey")
   val apiBase: String = "https://huxley2.azurewebsites.net/"
 
-  def addApiKeyToRequest(url: String): String = {
-    if (url.contains("?")) {
-      url + s"&apiKey=$apiKey"
-    } else {
-      url + s"?apiKey=$apiKey"
-    }
-  }
-  //    https://api.departureboard.io/api/v2.0/getDeparturesByCRS/NEW/?apiKey=apiKey
+  // Due to change of API, apiKey no longer used, although we are now using a live API instance that may not be fully reliable.
+//  def addApiKeyToRequest(url: String): String = {
+//    if (url.contains("?")) {
+//      url + s"&apiKey=$apiKey"
+//    } else {
+//      url + s"?apiKey=$apiKey"
+//    }
+//  }
+
   def getStationData(stationCode: String): Future[String] = {
-        val apiRoute: String = s"departures/$stationCode/"
-        val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
+        val address: String = s"departures/$stationCode/"
+//        val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
         cache.set("test", "test")
         ws.url(address).get().map { response =>
           System.out.println(response.body)
