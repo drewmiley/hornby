@@ -22,14 +22,19 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 //  }
 
   def getStationData(stationCode: String): Future[String] = {
-        val address: String = s"departures/$stationCode/"
-//        val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
-        cache.set("test", "test")
-        ws.url(address).get().map { response =>
-          System.out.println(response.body)
-          (Json.parse(response.body) \ "crs").as[String]
-        }
-      }
+    val address: String = s"departures/$stationCode/"
+//    val departuresAddress: String = s"departures/$stationCode"
+//    val arrivalsAddress: String = s"arrivals/$stationCode"
+//    val crsQuery: String = "Newc"
+//    val crsQueryAddress: String = s"crs/$crsQuery"
+//    val serviceId: String = s"service/{serviceID}"
+//    val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
+    cache.set("test", "test")
+    ws.url(address).get().map { response =>
+      System.out.println(response.body)
+      (Json.parse(response.body) \ "crs").as[String]
+    }
+  }
 
 }
 
