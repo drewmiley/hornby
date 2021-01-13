@@ -24,17 +24,6 @@ lazy val root = (project in file("."))
     )
   )
 
-lazy val gatlingVersion = "3.3.1"
-lazy val gatling = (project in file("gatling"))
-  .enablePlugins(GatlingPlugin)
-  .settings(
-    scalaVersion := "2.12.10",
-    libraryDependencies ++= Seq(
-      "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion % Test,
-      "io.gatling" % "gatling-test-framework" % gatlingVersion % Test
-    )
-  )
-
 // Documentation for this project:
 //    sbt "project docs" "~ paradox"
 //    open docs/target/paradox/site/index.html
