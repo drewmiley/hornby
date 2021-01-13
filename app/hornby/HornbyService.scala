@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheApi, configuration: Configuration)(implicit ec: ExecutionContext) {
   val apiKey: String = configuration.get[String]("apiKey")
-  val apiBase: String = "https://api.departureboard.io/api/v2.0/"
+  val apiBase: String = "https://huxley2.azurewebsites.net/"
 
   def addApiKeyToRequest(url: String): String = {
     if (url.contains("?")) {
@@ -21,7 +21,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
   //    https://api.departureboard.io/api/v2.0/getDeparturesByCRS/NEW/?apiKey=apiKey
   def getStationData(stationCode: String): Future[String] = {
-        val apiRoute: String = s"getDeparturesByCRS/$stationCode/"
+        val apiRoute: String = s"departures/$stationCode/"
         val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
         cache.set("test", "test")
         ws.url(address).get().map { response =>
