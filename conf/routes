@@ -1,2 +1,2 @@
 ->         /v1/posts               v1.post.PostRouter
-->         /api                    hornby.HornbyRouter
+->         /posts                  post.PostRouter
