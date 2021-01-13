@@ -1,9 +1,11 @@
 package hornby
 
-import play.api.Configuration
-import play.api.libs.json.Json
-
 import javax.inject.Inject
+import play.api.Configuration
+import play.api.cache.{NamedCache, SyncCacheApi}
+import play.api.libs.json.Json
+import play.api.libs.ws._
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheApi, configuration: Configuration)(implicit ec: ExecutionContext) {
