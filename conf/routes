@@ -1,5 +1,4 @@
-GET         /api                         hornby.HornbyController.test
-GET         /departures                  hornby.HornbyController.getDepartures
-GET         /arrivals                    hornby.HornbyController.getArrivals
-GET         /crs                         hornby.HornbyController.getCRSByQuery
-GET         /service                     hornby.HornbyController.getDetailedServiceByID
+GET         /departures/:crs                 hornby.HornbyController.getDepartures(crs: String)
+GET         /arrivals/:crs                   hornby.HornbyController.getArrivals(crs: String)
+GET         /crs/:query                      hornby.HornbyController.getCRSByQuery(query: String)
+GET         /service/:id                     hornby.HornbyController.getDetailedServiceByID(id: String)

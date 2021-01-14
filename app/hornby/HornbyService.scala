@@ -52,6 +52,4 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
       detailedService.toString
     }
   }
-
-  def test(stationCode: String): Future[String] = Future("Compiled")
 }

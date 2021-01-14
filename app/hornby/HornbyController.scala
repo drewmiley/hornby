@@ -16,31 +16,27 @@ class HornbyController @Inject()(hornbyService: HornbyService, cc: HornbyControl
 
   private val logger = Logger(getClass)
 
-  def getDepartures: Action[AnyContent] = HornbyAction.async { implicit request =>
+  def getDepartures(crs: String): Action[AnyContent] = HornbyAction.async { implicit request =>
     hornbyService.getDepartures("NEW").map { data =>
       Ok(Json.toJson(data))
     }
   }
 
-  def getArrivals: Action[AnyContent] = HornbyAction.async { implicit request =>
+  def getArrivals(crs: String): Action[AnyContent] = HornbyAction.async { implicit request =>
     hornbyService.getArrivals("NEW").map { data =>
       Ok(Json.toJson(data))
     }
   }
 
-  def getCRSByQuery: Action[AnyContent] = HornbyAction.async { implicit request =>
-    hornbyService.getCRSByQuery("newc").map { data =>
+  def getCRSByQuery(query: String): Action[AnyContent] = HornbyAction.async { implicit request =>
+    hornbyService.getCRSByQuery(query).map { data =>
       Ok(Json.toJson(data))
     }
   }
 
-  def getDetailedServiceByID: Action[AnyContent] = HornbyAction.async { implicit request =>
+  def getDetailedServiceByID(id: String): Action[AnyContent] = HornbyAction.async { implicit request =>
     hornbyService.getDetailedServiceByID("service_id").map { data =>
       Ok(Json.toJson(data))
     }
-  }
-
-  def test: Action[AnyContent] = HornbyAction.async { implicit request =>
-    hornbyService.test("NCL").map { data => Ok(Json.toJson(data)) }
   }
 }
