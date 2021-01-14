@@ -7,13 +7,13 @@ case class SimpleService(
                     originCRS: String = "",
                     destinationCRS: String = "",
                     serviceID: String = "",
-                    sta: Option[String] = None,
-                    eta: Option[String] = None,
-                    std: Option[String] = None,
-                    etd: Option[String] = None,
+                    scheduledArrivalTime: Option[String] = None,
+                    expectedArrivalTime: Option[String] = None,
+                    scheduledDepartureTime: Option[String] = None,
+                    expectedDepartureTime: Option[String] = None,
                     platform: Option[String] = None
                   ) {
-  val isArrival: Boolean = sta.isDefined
+  val isArrival: Boolean = scheduledArrivalTime.isDefined
 }
 
 object SimpleService {
