@@ -8,6 +8,6 @@ case class StationByPlatforms(
                      services: Option[Seq[CallingPoint]] = None
                    )
 
-object Arrivals {
+object StationByPlatforms {
   implicit val writes: Writes[StationByPlatforms] = Json.writes[StationByPlatforms]
 }
