@@ -46,8 +46,6 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
   def getDetailedServiceByID(serviceID: String): Future[DetailedService] = {
     ws.url(s"$apiBase/service/$serviceID").get().map { response =>
-      val blah = response.body
-      System.out.print(blah)
       Json.parse(response.body).as[DetailedService]
     }
   }
@@ -61,7 +59,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
     } yield (arrivalServices ++ departureServices).map(_.serviceID).distinct
     val detailedServices: Future[Seq[DetailedService]] = uniqueServiceIDs
       .flatMap(serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
-    val station: Future[Station] = detailedServices.flatMap(huxleyServices => {
+    detailedServices.flatMap(huxleyServices => {
       val platformServices = huxleyServices
         .groupBy(_.platform)
         .values
@@ -70,7 +68,6 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
         .toSeq
       Future.successful(Station(crs, platformServices))
     })
-    station
   }
 
   def getNextTrainsOnPlatforms(stationName: String) = {
