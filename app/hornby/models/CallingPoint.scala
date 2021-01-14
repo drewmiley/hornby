@@ -5,11 +5,14 @@ import play.api.libs.functional.syntax._
 
 case class CallingPoint(
                        crs: String = "",
-                       st: String = "",
-                       et: Option[String] = None,
-                       at: Option[String] = None
+                       scheduledTime: String = "",
+                       expectedTime: Option[String] = None,
+                       actualTime: Option[String] = None
                      ) {
-  val hasCalled: Boolean = at.isDefined
+  val hasCalled: Boolean = actualTime match {
+    case Some("Delayed") | None => false
+    case _ => true
+  }
 }
 
 object CallingPoint {

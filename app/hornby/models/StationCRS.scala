@@ -14,10 +14,5 @@ object StationCRS {
       (__ \ "crsCode").read[String]
     )(StationCRS.apply _)
 
-  implicit val writes: Writes[StationCRS] = (stationCRS: StationCRS) => {
-    Json.obj(
-      "stationName" -> stationCRS.stationName,
-      "crsCode" -> stationCRS.crsCode
-    )
-  }
+  implicit val writes: Writes[StationCRS] = Json.writes[StationCRS]
 }
