@@ -15,11 +15,13 @@ object Service {
 
   // TODO: Can we make this implicit?
   def convert(huxleyService: DetailedService): Service = {
-    val callingAt = huxleyService.previousCallingPoints ++ huxleyService.subsequentCallingPoints
-    val isOrigin = huxleyService.previousCallingPoints.isEmpty
-    val isDestination = huxleyService.subsequentCallingPoints.isEmpty
-    val origin = if (isOrigin) { huxleyService.crs } else { huxleyService.previousCallingPoints.head.crs }
-    val destination = if (isDestination) { huxleyService.crs } else { huxleyService.subsequentCallingPoints.last.crs }
+    val pcp = huxleyService.previousCallingPoints.getOrElse(Seq())
+    val scp = huxleyService.subsequentCallingPoints.getOrElse(Seq())
+    val callingAt = pcp ++ scp
+    val isOrigin = pcp.isEmpty
+    val isDestination = scp.isEmpty
+    val origin = if (isOrigin) { huxleyService.crs } else { pcp.head.crs }
+    val destination = if (isDestination) { huxleyService.crs } else { scp.last.crs }
     // TODO: Need to add to calling points if isOrigin or isDestination
     Service(
       huxleyService.platform,

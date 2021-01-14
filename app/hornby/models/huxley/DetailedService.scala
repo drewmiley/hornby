@@ -13,17 +13,8 @@ case class DetailedService(
                        scheduledDepartureTime: Option[String] = None,
                        expectedDepartureTime: Option[String] = None
                      ) {
-  // TODO: This is smelly code
-  val previousCallingPoints: Seq[CallingPoint] = if (_previousCallingPointsWrapper.getOrElse(Seq()).nonEmpty) {
-    _previousCallingPointsWrapper.getOrElse(Seq()).head.callingPoints
-  } else {
-    Seq()
-  }
-  val subsequentCallingPoints: Seq[CallingPoint] = if (_subsequentCallingPointsWrapper.getOrElse(Seq()).nonEmpty) {
-    _subsequentCallingPointsWrapper.getOrElse(Seq()).head.callingPoints
-  } else {
-    Seq()
-  }
+  val previousCallingPoints: Option[Seq[CallingPoint]] = _previousCallingPointsWrapper.map(_.head.callingPoints)
+  val subsequentCallingPoints: Option[Seq[CallingPoint]] = _subsequentCallingPointsWrapper.map(_.head.callingPoints)
 }
 
 object DetailedService {
