@@ -27,7 +27,6 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
   def getDepartures(stationCode: String): Future[String] = {
     ws.url(s"$apiBase/departures/$stationCode").get().map { response =>
-      System.out.println(response.body)
       val departures = Json.parse(response.body).as[Departures]
       departures.toString
     }
@@ -35,7 +34,6 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
   def getArrivals(stationCode: String): Future[String] = {
     ws.url(s"$apiBase/arrivals/$stationCode").get().map { response =>
-      System.out.println(response.body)
       val arrivals = Json.parse(response.body).as[Arrivals]
       arrivals.toString
     }
@@ -43,7 +41,6 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
   def getCRSByQuery(crsQuery: String): Future[String] = {
     ws.url(s"$apiBase/crs/$crsQuery").get().map { response =>
-      System.out.println(response.body)
       val crsQueryResult = Json.parse(response.body).as[Seq[StationCRS]]
       crsQueryResult.toString
     }
@@ -51,7 +48,6 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
   def getDetailedServiceByID(serviceID: String): Future[String] = {
     ws.url(s"$apiBase/service/{serviceID}").get().map { response =>
-      System.out.println(response.body)
       val detailedService = Json.parse(response.body).as[DetailedService]
       detailedService.toString
     }
