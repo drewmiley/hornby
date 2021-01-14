@@ -8,7 +8,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/docs" />
-            <option value="$PROJECT_DIR$/gatling" />
             <option value="$PROJECT_DIR$/project" />
           </set>
         </option>

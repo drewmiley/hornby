@@ -1,5 +1,6 @@
 package hornby.models.platform
 
+import hornby.models.huxley.DetailedService
 import play.api.libs.json._
 
 case class Service(
@@ -11,4 +12,8 @@ case class Service(
 
 object Service {
   implicit val writes: Writes[Service] = Json.writes[Service]
+
+  def convert(huxleyService: DetailedService): Service = {
+    Service()
+  }
 }
