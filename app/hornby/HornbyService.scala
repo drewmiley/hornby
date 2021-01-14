@@ -1,6 +1,7 @@
 package hornby
 
 import hornby.models._
+import hornby.models.huxley.{Arrivals, Departures, DetailedService, StationCRS}
 
 import javax.inject.Inject
 import play.api.Configuration

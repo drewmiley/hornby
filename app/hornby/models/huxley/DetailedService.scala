@@ -1,7 +1,7 @@
-package hornby.models
+package hornby.models.huxley
 
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 case class DetailedService(
                        _previousCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
