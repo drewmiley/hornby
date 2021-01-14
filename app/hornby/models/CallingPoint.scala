@@ -9,7 +9,7 @@ case class CallingPoint(
                        et: Option[String] = None,
                        at: Option[String] = None
                      ) {
-  val hasCalledAt: Boolean = et.isDefined
+  val hasCalled: Boolean = at.isDefined
 }
 
 object CallingPoint {
