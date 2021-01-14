@@ -20,7 +20,7 @@ object SimpleService {
   implicit val reads: Reads[SimpleService] = (
     (__ \ "origin" \\ "crs").read[String] and
       (__ \ "destination" \\ "crs").read[String] and
-      (__ \ "serviceIdPercentEncoded").read[String] and
+      (__ \ "serviceIdUrlSafe").read[String] and
       (__ \ "sta").readNullable[String] and
       (__ \ "eta").readNullable[String] and
       (__ \ "std").readNullable[String] and

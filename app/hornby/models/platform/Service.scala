@@ -13,6 +13,8 @@ case class Service(
 object Service {
   implicit val writes: Writes[Service] = Json.writes[Service]
 
+  // TODO: Implement this function
+  // TODO: Can we make this implicit?
   def convert(huxleyService: DetailedService): Service = {
     Service()
   }

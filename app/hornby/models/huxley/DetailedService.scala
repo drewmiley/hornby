@@ -4,8 +4,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class DetailedService(
-                       _previousCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
-                       _subsequentCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
+                       _previousCallingPointsWrapper: Option[Seq[CallingPointWrapper]] = None,
+                       _subsequentCallingPointsWrapper: Option[Seq[CallingPointWrapper]] = None,
                        crs: String = "",
                        platform: Option[String] = None,
                        scheduledArrivalTime: Option[String] = None,
@@ -13,14 +13,23 @@ case class DetailedService(
                        scheduledDepartureTime: Option[String] = None,
                        expectedDepartureTime: Option[String] = None
                      ) {
-  val previousCallingPoints: Seq[CallingPoint] = _previousCallingPointsWrapper.head.callingPoints
-  val subsequentCallingPoints: Seq[CallingPoint] = _subsequentCallingPointsWrapper.head.callingPoints
+  // TODO: This is smelly code
+  val previousCallingPoints: Seq[CallingPoint] = if (_previousCallingPointsWrapper.getOrElse(Seq()).nonEmpty) {
+    _previousCallingPointsWrapper.getOrElse(Seq()).head.callingPoints
+  } else {
+    Seq()
+  }
+  val subsequentCallingPoints: Seq[CallingPoint] = if (_subsequentCallingPointsWrapper.getOrElse(Seq()).nonEmpty) {
+    _subsequentCallingPointsWrapper.getOrElse(Seq()).head.callingPoints
+  } else {
+    Seq()
+  }
 }
 
 object DetailedService {
   implicit val reads: Reads[DetailedService] = (
-    (__ \ "previousCallingPoints").read[Seq[CallingPointWrapper]] and
-      (__ \ "subsequentCallingPoints").read[Seq[CallingPointWrapper]] and
+    (__ \ "previousCallingPoints").readNullable[Seq[CallingPointWrapper]] and
+      (__ \ "subsequentCallingPoints").readNullable[Seq[CallingPointWrapper]] and
       (__ \ "crs").read[String] and
       (__ \ "platform").readNullable[String] and
       (__ \ "sta").readNullable[String] and

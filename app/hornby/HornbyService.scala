@@ -47,34 +47,33 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   def getDetailedServiceByID(serviceID: String): Future[DetailedService] = {
     ws.url(s"$apiBase/service/$serviceID").get().map { response =>
       val blah = response.body
+      System.out.print(blah)
       Json.parse(response.body).as[DetailedService]
     }
   }
 
-  private def getNextTrainsOnPlatformsForCRS(crs: String): Future[Seq[String]] = {
+  private def getNextTrainsOnPlatformsForCRS(crs: String): Future[Station] = {
     val uniqueServiceIDs: Future[Seq[String]] = for {
       arrivals <- getArrivals(crs)
       departures <- getDepartures(crs)
       arrivalServices <- Future(arrivals.services.getOrElse(Seq()))
       departureServices <- Future(departures.services.getOrElse(Seq()))
     } yield (arrivalServices ++ departureServices).map(_.serviceID).distinct
-    uniqueServiceIDs
-    // Working correctly to here, now to return Future[Seq[DetailedServices]]
-//    val asasssa = uniqueServiceIDs
-//      .map(serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
-//    val bds = asasssa.flatMap(x => x)
-//    val dfsdf = for {
-//      ddf <- asasssa
-//    } yield ddf.flatMap(ss => {
-//      val a = ss.groupBy(_.platform).values.map(_.head).toSeq
-//      val dfsd = a.map(dfd => Service.convert(dfd))
-//      Future.successful(Some(Station("dssf", dfsd)))
-//    })
-//    val t = dfsdf.flatMap(x => x)
-//    t
+    val detailedServices: Future[Seq[DetailedService]] = uniqueServiceIDs
+      .flatMap(serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
+    val station: Future[Station] = detailedServices.flatMap(huxleyServices => {
+      val platformServices = huxleyServices
+        .groupBy(_.platform)
+        .values
+        .map(_.head)
+        .map(Service.convert)
+        .toSeq
+      Future.successful(Station(crs, platformServices))
+    })
+    station
   }
 
-  def getNextTrainsOnPlatforms(stationName: String): Future[Option[Seq[String]]] = {
+  def getNextTrainsOnPlatforms(stationName: String) = {
     val getCRSByQuery: Future[Seq[StationCRS]] = ws.url(s"$apiBase/crs/$stationName").get()
       .map { response => Json.parse(response.body).as[Seq[StationCRS]] }
     getCRSByQuery.flatMap(crsStations => {
