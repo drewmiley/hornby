@@ -1,7 +1,5 @@
 package hornby
 
-import cats.data.OptionT
-import hornby.models.{huxley, _}
 import hornby.models.huxley.{Arrivals, Departures, DetailedService, StationCRS}
 import hornby.models.platform.{Service, Station}
 
@@ -12,7 +10,6 @@ import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheApi, configuration: Configuration)(implicit ec: ExecutionContext) {
   //  val apiKey: String = configuration.get[String]("apiKey")
@@ -49,37 +46,40 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
   def getDetailedServiceByID(serviceID: String): Future[DetailedService] = {
     ws.url(s"$apiBase/service/$serviceID").get().map { response =>
+      val blah = response.body
       Json.parse(response.body).as[DetailedService]
     }
   }
 
-  private def getNextTrainsOnPlatformsForCRS(crs: String): Future[Option[Station]] = {
-    val uniqueServiceIDs = for {
+  private def getNextTrainsOnPlatformsForCRS(crs: String): Future[Seq[String]] = {
+    val uniqueServiceIDs: Future[Seq[String]] = for {
       arrivals <- getArrivals(crs)
       departures <- getDepartures(crs)
       arrivalServices <- Future(arrivals.services.getOrElse(Seq()))
       departureServices <- Future(departures.services.getOrElse(Seq()))
     } yield (arrivalServices ++ departureServices).map(_.serviceID).distinct
-    val detailedServices = uniqueServiceIDs
-      .map(_.map(getDetailedServiceByID))
-      .flatMap(Future.sequence)
-    val detailedServicesWithUniquePlatforms: Future[Seq[DetailedService]] = {
-      detailedServices.flatMap(services => {
-        Future.successful(services.groupBy(_.platform).values.map(_.head).toSeq)
-      })
-    }
-    detailedServicesWithUniquePlatforms.map(services => {
-      val platformServices: Seq[Service] = services.map(service => Service.convert(service))
-      Some(Station(crs, platformServices))
-    })
+    uniqueServiceIDs
+    // Working correctly to here, now to return Future[Seq[DetailedServices]]
+//    val asasssa = uniqueServiceIDs
+//      .map(serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
+//    val bds = asasssa.flatMap(x => x)
+//    val dfsdf = for {
+//      ddf <- asasssa
+//    } yield ddf.flatMap(ss => {
+//      val a = ss.groupBy(_.platform).values.map(_.head).toSeq
+//      val dfsd = a.map(dfd => Service.convert(dfd))
+//      Future.successful(Some(Station("dssf", dfsd)))
+//    })
+//    val t = dfsdf.flatMap(x => x)
+//    t
   }
 
-  def getNextTrainsOnPlatforms(stationName: String) = {
+  def getNextTrainsOnPlatforms(stationName: String): Future[Option[Seq[String]]] = {
     val getCRSByQuery: Future[Seq[StationCRS]] = ws.url(s"$apiBase/crs/$stationName").get()
       .map { response => Json.parse(response.body).as[Seq[StationCRS]] }
     getCRSByQuery.flatMap(crsStations => {
       if (crsStations.nonEmpty && crsStations.head.stationName == stationName) {
-        getNextTrainsOnPlatformsForCRS(crsStations.head.crsCode)
+        getNextTrainsOnPlatformsForCRS(crsStations.head.crsCode).map(Some(_))
       } else {
         Future.successful(None)
       }
