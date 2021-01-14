@@ -47,7 +47,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
 
   def getDetailedServiceByID(serviceID: String): Future[String] = {
-    ws.url(s"$apiBase/service/{serviceID}").get().map { response =>
+    ws.url(s"$apiBase/service/$serviceID").get().map { response =>
       val detailedService = Json.parse(response.body).as[DetailedService]
       detailedService.toString
     }

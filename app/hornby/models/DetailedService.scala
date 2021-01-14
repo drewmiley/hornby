@@ -4,8 +4,8 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 case class DetailedService(
-                       private val previousCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
-                       private val subsequentCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
+                       _previousCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
+                       _subsequentCallingPointsWrapper: Seq[CallingPointWrapper] = Seq(),
                        crs: String = "",
                        platform: String = "",
                        sta: String = "",
@@ -13,8 +13,8 @@ case class DetailedService(
                        std: String = "",
                        etd: String = ""
                      ) {
-  val previousCallingPoints: Seq[CallingPoint] = previousCallingPointsWrapper.head.callingPoints
-  val subsequentCallingPoints: Seq[CallingPoint] = subsequentCallingPointsWrapper.head.callingPoints
+  val previousCallingPoints: Seq[CallingPoint] = _previousCallingPointsWrapper.head.callingPoints
+  val subsequentCallingPoints: Seq[CallingPoint] = _subsequentCallingPointsWrapper.head.callingPoints
 }
 
 object DetailedService {
@@ -30,6 +30,7 @@ object DetailedService {
     )(DetailedService.apply _)
 }
 
+// TODO: Can this be avoided?
 case class CallingPointWrapper(
                               callingPoints: Seq[CallingPoint] = Seq()
                               )
