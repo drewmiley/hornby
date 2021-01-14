@@ -5,7 +5,7 @@ import hornby.models._
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.cache.{NamedCache, SyncCacheApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,31 +25,27 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 
 //    val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
 
-  def getDepartures(stationCode: String): Future[String] = {
+  def getDepartures(stationCode: String): Future[Departures] = {
     ws.url(s"$apiBase/departures/$stationCode").get().map { response =>
-      val departures = Json.parse(response.body).as[Departures]
-      departures.toString
+      Json.parse(response.body).as[Departures]
     }
   }
 
-  def getArrivals(stationCode: String): Future[String] = {
+  def getArrivals(stationCode: String): Future[Arrivals] = {
     ws.url(s"$apiBase/arrivals/$stationCode").get().map { response =>
-      val arrivals = Json.parse(response.body).as[Arrivals]
-      arrivals.toString
+      Json.parse(response.body).as[Arrivals]
     }
   }
 
-  def getCRSByQuery(crsQuery: String): Future[String] = {
+  def getCRSByQuery(crsQuery: String): Future[Seq[StationCRS]] = {
     ws.url(s"$apiBase/crs/$crsQuery").get().map { response =>
-      val crsQueryResult = Json.parse(response.body).as[Seq[StationCRS]]
-      Json.toJson(crsQueryResult).toString()
+      Json.parse(response.body).as[Seq[StationCRS]]
     }
   }
 
-  def getDetailedServiceByID(serviceID: String): Future[String] = {
+  def getDetailedServiceByID(serviceID: String): Future[DetailedService] = {
     ws.url(s"$apiBase/service/$serviceID").get().map { response =>
-      val detailedService = Json.parse(response.body).as[DetailedService]
-      detailedService.toString
+      Json.parse(response.body).as[DetailedService]
     }
   }
 }

@@ -27,4 +27,6 @@ object SimpleService {
       (__ \ "etd").readNullable[String] and
       (__ \ "platform").readNullable[String]
     )(SimpleService.apply _)
+
+  implicit val writes: Writes[SimpleService] = Json.writes[SimpleService]
 }

@@ -28,6 +28,19 @@ object DetailedService {
       (__ \ "std").readNullable[String] and
       (__ \ "etd").readNullable[String]
     )(DetailedService.apply _)
+
+  implicit val writes: Writes[DetailedService] = (detailedService: DetailedService) => {
+    Json.obj(
+      "previousCallingPoints" -> detailedService.previousCallingPoints,
+      "subsequentCallingPoints" -> detailedService.subsequentCallingPoints,
+      "crs" -> detailedService.crs,
+      "platform" -> detailedService.platform,
+      "scheduledArrivalTime" -> detailedService.scheduledArrivalTime,
+      "expectedArrivalTime" -> detailedService.expectedArrivalTime,
+      "scheduledDepartureTime" -> detailedService.scheduledDepartureTime,
+      "expectedDepartureTime" -> detailedService.expectedDepartureTime
+    )
+  }
 }
 
 // TODO: Can this be avoided?

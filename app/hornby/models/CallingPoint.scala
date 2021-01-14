@@ -19,4 +19,6 @@ object CallingPoint {
       (__ \ "et").readNullable[String] and
       (__ \ "at").readNullable[String]
     )(CallingPoint.apply _)
+
+  implicit val writes: Writes[CallingPoint] = Json.writes[CallingPoint]
 }

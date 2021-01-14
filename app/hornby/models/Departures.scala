@@ -13,4 +13,6 @@ object Departures {
     (__ \ "crs").read[String] and
       (__ \ "trainServices").readNullable[Seq[SimpleService]]
     )(Departures.apply _)
+
+  implicit val writes: Writes[Departures] = Json.writes[Departures]
 }
