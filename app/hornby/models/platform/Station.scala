@@ -3,11 +3,11 @@ package hornby.models.platform
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class StationByPlatforms(
+case class Station(
                      crs: String = "",
                      services: Option[Seq[CallingPoint]] = None
                    )
 
-object StationByPlatforms {
-  implicit val writes: Writes[StationByPlatforms] = Json.writes[StationByPlatforms]
+object Station {
+  implicit val writes: Writes[Station] = Json.writes[Station]
 }
