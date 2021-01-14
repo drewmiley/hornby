@@ -57,7 +57,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
     }
   }
 
-  def getStationData(stationCode: String): Future[String] = {
+  def test(stationCode: String): Future[String] = {
     cache.set("test", "test")
     ws.url(s"$apiBase/departures/$stationCode").get().map { response =>
       System.out.println(response.body)
