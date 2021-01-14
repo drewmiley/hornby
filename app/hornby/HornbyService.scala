@@ -12,7 +12,7 @@ import play.api.libs.ws._
 import scala.concurrent.{ExecutionContext, Future}
 
 class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheApi, configuration: Configuration)(implicit ec: ExecutionContext) {
-//  val apiKey: String = configuration.get[String]("apiKey")
+  //  val apiKey: String = configuration.get[String]("apiKey")
   val apiBase: String = "https://huxley2.azurewebsites.net/"
 
   // Due to change of API, apiKey no longer used, although we are now using a live API instance that may not be fully reliable.
@@ -47,6 +47,19 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   def getDetailedServiceByID(serviceID: String): Future[DetailedService] = {
     ws.url(s"$apiBase/service/$serviceID").get().map { response =>
       Json.parse(response.body).as[DetailedService]
+    }
+  }
+
+  def getNextTrainsOnPlatforms(stationName: String) = {
+    ws.url(s"$apiBase/crs/$stationName").get().map { response =>
+      // TODO: Complete this function
+      val initialCRSByStationName = Json.parse(response.body).as[Seq[StationCRS]]
+      // Exact match check on name
+      if (initialCRSByStationName.length == 1) {
+        "Next Stage"
+      } else {
+        "Enter valid station name"
+      }
     }
   }
 }

@@ -2,3 +2,4 @@ GET         /departures/:crs                 hornby.HornbyController.getDepartur
 GET         /arrivals/:crs                   hornby.HornbyController.getArrivals(crs: String)
 GET         /crs/:query                      hornby.HornbyController.getCRSByQuery(query: String)
 GET         /service/:id                     hornby.HornbyController.getDetailedServiceByID(id: String)
+GET         /platforms/:stationName          hornby.HornbyController.getNextTrainsOnPlatforms(stationName: String)

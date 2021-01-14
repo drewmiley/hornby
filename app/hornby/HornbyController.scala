@@ -39,4 +39,10 @@ class HornbyController @Inject()(hornbyService: HornbyService, cc: HornbyControl
       Ok(Json.toJson(data))
     }
   }
+
+  def getNextTrainsOnPlatforms(stationName: String): Action[AnyContent] = HornbyAction.async { implicit request =>
+    hornbyService.getNextTrainsOnPlatforms(stationName).map { data =>
+      Ok(Json.toJson(data))
+    }
+  }
 }
