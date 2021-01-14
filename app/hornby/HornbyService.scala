@@ -1,5 +1,7 @@
 package hornby
 
+import hornby.models._
+
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.cache.{NamedCache, SyncCacheApi}
@@ -21,14 +23,46 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 //    }
 //  }
 
+//    val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
+
+  def getDepartures(stationCode: String): Future[String] = {
+    val departuresAddress: String = s"departures/$stationCode"
+    ws.url(departuresAddress).get().map { response =>
+      System.out.println(response.body)
+      val departures = Json.parse(response.body).as[Departures]
+      departures.toString
+    }
+  }
+
+  def getArrivals(stationCode: String): Future[String] = {
+    val arrivalsAddress: String = s"arrivals/$stationCode"
+    ws.url(arrivalsAddress).get().map { response =>
+      System.out.println(response.body)
+      val arrivals = Json.parse(response.body).as[Arrivals]
+      arrivals.toString
+    }
+  }
+
+  def getCRSByQuery(crsQuery: String): Future[String] = {
+    val crsQueryAddress: String = s"crs/$crsQuery"
+    ws.url(crsQueryAddress).get().map { response =>
+      System.out.println(response.body)
+      val crsQueryResult = Json.parse(response.body).as[Seq[StationCRS]]
+      crsQueryResult.toString
+    }
+  }
+
+  def getDetailedServiceByID(serviceID: String): Future[String] = {
+    val serviceIdAddress: String = s"service/{serviceID}"
+    ws.url(serviceIdAddress).get().map { response =>
+      System.out.println(response.body)
+      val detailedService = Json.parse(response.body).as[DetailedService]
+      detailedService.toString
+    }
+  }
+
   def getStationData(stationCode: String): Future[String] = {
     val address: String = s"departures/$stationCode/"
-//    val departuresAddress: String = s"departures/$stationCode"
-//    val arrivalsAddress: String = s"arrivals/$stationCode"
-//    val crsQuery: String = "Newc"
-//    val crsQueryAddress: String = s"crs/$crsQuery"
-//    val serviceId: String = s"service/{serviceID}"
-//    val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
     cache.set("test", "test")
     ws.url(address).get().map { response =>
       System.out.println(response.body)
@@ -37,69 +71,3 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
 
 }
-
-//class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheApi, configuration: Configuration)(implicit ec: ExecutionContext) {
-//  private val endpoint = configuration.getString("api").getOrElse("http://localhost:8080/") + "api/"
-//
-//  private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
-//  private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
-//  private def generateQuizEndpoint = s"${endpoint}newquiz"
-//  private def getQuizByCodeEndpoint(code: String) = s"${endpoint}quiz/$code"
-//  private def submitAnswersEndpoint(code: String, user: String) = s"${endpoint}answers/$code/$user"
-//  private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/$code"
-//  private def getLeaderboardsByUserEndpoint(user: String = "") =
-//    s"${endpoint}leaderboards${if(user.nonEmpty) s"?user=$user" else ""}"
-//
-//  def getValidQuizOptions: Future[ValidQuizOptions] = {
-//    def getViaApi: Future[ValidQuizOptions] =
-//      ws.url(getValidQuizOptionsEndpoint).get().map { response =>
-//        val validQuizOptions = Json.parse(response.body).as[ValidQuizOptions]
-//        cache.set("validQuizOptions", validQuizOptions)
-//        validQuizOptions
-//      }
-//    cache.get[ValidQuizOptions]("validQuizOptions") map { Future.successful } getOrElse getViaApi
-//  }
-//
-//  def getValidQuizCodes(forceViaApi: Boolean = false): Future[Seq[String]] = {
-//    def getViaApi: Future[Seq[String]] =
-//      ws.url(getValidQuizCodesEndpoint).get().map { response =>
-//        val validQuizCodes = Json.parse(response.body).as[Seq[String]]
-//        cache.set("validQuizCodes", validQuizCodes)
-//        validQuizCodes
-//      }
-//    (forceViaApi, cache.get[Seq[String]]("validQuizCodes")) match {
-//      case (false, Some(validQuizCodes)) => Future.successful(validQuizCodes)
-//      case _ => getViaApi
-//    }
-//  }
-//
-//  def generateQuiz(generateQuiz: GenerateQuiz): Future[String] = {
-//    val req = generateQuiz.toRequestBody
-//    ws.url(generateQuizEndpoint).post(req).map { response =>
-//      (Json.parse(response.body) \ "code").as[String]
-//    }
-//  }
-//
-//  def getQuizByCode(code: String): Future[Seq[Question]] =
-//    ws.url(getQuizByCodeEndpoint(code)).get().map { response =>
-//      cache.set("code", code)
-//      (Json.parse(response.body) \ "quiz").as[Seq[Question]]
-//    }
-//
-//  def submitAnswers(submitAnswers: SubmitAnswers): Future[String] = {
-//    val req = submitAnswers.toRequestBody
-//    ws.url(submitAnswersEndpoint(submitAnswers.code, submitAnswers.name)).post(req).map { response =>
-//      (Json.parse(response.body) \ "code").as[String]
-//    }
-//  }
-//
-//  def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] =
-//    ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
-//      (Json.parse(response.body) \ "results").as[Seq[LeaderboardRow]]
-//    }
-//
-//  def getLeaderboardsByUser(user: String = ""): Future[Seq[Leaderboard]] =
-//    ws.url(getLeaderboardsByUserEndpoint(user)).get().map { response =>
-//      Json.parse(response.body).as[Seq[Leaderboard]]
-//    }
-//}
