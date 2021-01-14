@@ -5,12 +5,12 @@ import play.api.libs.functional.syntax._
 
 case class Arrivals(
                        crs: String = "",
-                       services: Seq[SimpleService] = Seq()
+                       services: Option[Seq[SimpleService]] = None
                      )
 
 object Arrivals {
   implicit val reads: Reads[Arrivals] = (
     (__ \ "crs").read[String] and
-      (__ \ "trainServices").read[Seq[SimpleService]]
+      (__ \ "trainServices").readNullable[Seq[SimpleService]]
     )(Arrivals.apply _)
 }
