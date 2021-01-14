@@ -14,7 +14,7 @@ case class Arrival(
                           )
 
 object Arrival {
-  implicit val reads: Reads[Departure] = (
+  implicit val reads: Reads[Arrival] = (
     (__ \ "origin" \ "crs").read[String] and
       (__ \ "destination" \ "crs").read[String] and
       (__ \ "serviceIdUrlSafe").read[String] and
