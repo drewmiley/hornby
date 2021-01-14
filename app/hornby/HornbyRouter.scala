@@ -15,6 +15,14 @@ class HornbyRouter @Inject()(controller: HornbyController) extends SimpleRouter 
   override def routes: Routes = {
     case GET(p"/") =>
       controller.test
+    case GET(p"/departures") =>
+      controller.getDepartures
+    case GET(p"/arrivals") =>
+      controller.getArrivals
+    case GET(p"/crs") =>
+      controller.getCRSByQuery
+    case GET(p"/service") =>
+      controller.getDetailedServiceByID
   }
 
 }
