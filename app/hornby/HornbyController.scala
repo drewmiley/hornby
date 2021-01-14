@@ -17,13 +17,13 @@ class HornbyController @Inject()(hornbyService: HornbyService, cc: HornbyControl
   private val logger = Logger(getClass)
 
   def getDepartures(crs: String): Action[AnyContent] = HornbyAction.async { implicit request =>
-    hornbyService.getDepartures("NEW").map { data =>
+    hornbyService.getDepartures(crs).map { data =>
       Ok(Json.toJson(data))
     }
   }
 
   def getArrivals(crs: String): Action[AnyContent] = HornbyAction.async { implicit request =>
-    hornbyService.getArrivals("NEW").map { data =>
+    hornbyService.getArrivals(crs).map { data =>
       Ok(Json.toJson(data))
     }
   }
@@ -35,7 +35,7 @@ class HornbyController @Inject()(hornbyService: HornbyService, cc: HornbyControl
   }
 
   def getDetailedServiceByID(id: String): Action[AnyContent] = HornbyAction.async { implicit request =>
-    hornbyService.getDetailedServiceByID("service_id").map { data =>
+    hornbyService.getDetailedServiceByID(id).map { data =>
       Ok(Json.toJson(data))
     }
   }
