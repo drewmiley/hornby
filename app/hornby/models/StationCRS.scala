@@ -13,4 +13,11 @@ object StationCRS {
     (__ \ "stationName").read[String] and
       (__ \ "crsCode").read[String]
     )(StationCRS.apply _)
+
+  implicit val writes: Writes[StationCRS] = (stationCRS: StationCRS) => {
+    Json.obj(
+      "stationName" -> stationCRS.stationName,
+      "crsCode" -> stationCRS.crsCode
+    )
+  }
 }

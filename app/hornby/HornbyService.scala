@@ -42,7 +42,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   def getCRSByQuery(crsQuery: String): Future[String] = {
     ws.url(s"$apiBase/crs/$crsQuery").get().map { response =>
       val crsQueryResult = Json.parse(response.body).as[Seq[StationCRS]]
-      crsQueryResult.toString
+      Json.toJson(crsQueryResult).toString()
     }
   }
 
