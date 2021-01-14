@@ -1,1 +1,5 @@
-->         /api                    hornby.HornbyRouter
+GET         /api                         hornby.HornbyController.test
+GET         /departures                  hornby.HornbyController.getDepartures
+GET         /arrivals                    hornby.HornbyController.getArrivals
+GET         /crs                         hornby.HornbyController.getCRSByQuery
+GET         /service                     hornby.HornbyController.getDetailedServiceByID
