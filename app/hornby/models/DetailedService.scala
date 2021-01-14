@@ -7,6 +7,7 @@ case class DetailedService(
                        previousCallingPoints: Seq[CallingPoint] = Seq(),
                        subsequentCallingPoints: Seq[CallingPoint] = Seq(),
                        crs: String = "",
+                       platform: String = "",
                        sta: String = "",
                        eta: String = "",
                        std: String = "",
@@ -18,6 +19,7 @@ object DetailedService {
     (__ \ "previousCallingPoints"(0) \ "callingPoint").read[Seq[CallingPoint]] and
       (__ \ "subsequentCallingPoints"(0) \ "callingPoint").read[Seq[CallingPoint]] and
       (__ \ "crs").read[String] and
+      (__ \ "platform").read[String] and
       (__ \ "sta").read[String] and
       (__ \ "eta").read[String] and
       (__ \ "std").read[String] and
