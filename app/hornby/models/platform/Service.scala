@@ -1,11 +1,12 @@
 package hornby.models.platform
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class Service(
-                    crs: String = "",
-                    services: Option[Seq[CallingPoint]] = None
+                    platform: String = "",
+                    origin: String = "",
+                    destination: String = "",
+                    callingAt: Seq[CallingPoint] = Seq()
                   )
 
 object Service {
