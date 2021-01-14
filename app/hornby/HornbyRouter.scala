@@ -12,6 +12,7 @@ import javax.inject.Inject
 class HornbyRouter @Inject()(controller: HornbyController) extends SimpleRouter {
   val prefix = "/api"
 
+  // Remove router, do directly using routes and controller
   override def routes: Routes = {
     case GET(p"/") =>
       controller.test
