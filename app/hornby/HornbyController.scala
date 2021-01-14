@@ -41,6 +41,6 @@ class HornbyController @Inject()(hornbyService: HornbyService, cc: HornbyControl
   }
 
   def test: Action[AnyContent] = HornbyAction.async { implicit request =>
-    hornbyService.getStationData("NEW").map { data => Ok(Json.toJson(data)) }
+    hornbyService.getStationData("NCL").map { data => Ok(Json.toJson(data)) }
   }
 }

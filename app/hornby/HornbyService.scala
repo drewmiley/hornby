@@ -26,8 +26,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
 //    val address: String = addApiKeyToRequest(s"$apiBase$apiRoute")
 
   def getDepartures(stationCode: String): Future[String] = {
-    val departuresAddress: String = s"departures/$stationCode"
-    ws.url(departuresAddress).get().map { response =>
+    ws.url(s"$apiBase/departures/$stationCode").get().map { response =>
       System.out.println(response.body)
       val departures = Json.parse(response.body).as[Departures]
       departures.toString
@@ -35,8 +34,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
 
   def getArrivals(stationCode: String): Future[String] = {
-    val arrivalsAddress: String = s"arrivals/$stationCode"
-    ws.url(arrivalsAddress).get().map { response =>
+    ws.url(s"$apiBase/arrivals/$stationCode").get().map { response =>
       System.out.println(response.body)
       val arrivals = Json.parse(response.body).as[Arrivals]
       arrivals.toString
@@ -44,8 +42,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
 
   def getCRSByQuery(crsQuery: String): Future[String] = {
-    val crsQueryAddress: String = s"crs/$crsQuery"
-    ws.url(crsQueryAddress).get().map { response =>
+    ws.url(s"$apiBase/crs/$crsQuery").get().map { response =>
       System.out.println(response.body)
       val crsQueryResult = Json.parse(response.body).as[Seq[StationCRS]]
       crsQueryResult.toString
@@ -53,8 +50,7 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
 
   def getDetailedServiceByID(serviceID: String): Future[String] = {
-    val serviceIdAddress: String = s"service/{serviceID}"
-    ws.url(serviceIdAddress).get().map { response =>
+    ws.url(s"$apiBase/service/{serviceID}").get().map { response =>
       System.out.println(response.body)
       val detailedService = Json.parse(response.body).as[DetailedService]
       detailedService.toString
@@ -62,9 +58,8 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   }
 
   def getStationData(stationCode: String): Future[String] = {
-    val address: String = s"departures/$stationCode/"
     cache.set("test", "test")
-    ws.url(address).get().map { response =>
+    ws.url(s"$apiBase/departures/$stationCode").get().map { response =>
       System.out.println(response.body)
       (Json.parse(response.body) \ "crs").as[String]
     }
