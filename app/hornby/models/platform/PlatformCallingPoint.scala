@@ -15,10 +15,13 @@ object PlatformCallingPoint {
 
   // TODO: Can we make this implicit?
   def convert(huxleyCallingPoint: CallingPoint): PlatformCallingPoint = {
-    // TODO: Implement this function
-    val arrivalTime = None
-    val departureTime = None
-    val timesAreExpected = false
+    val arrivalTime = huxleyCallingPoint.expectedTime.map(d => {
+      if (d == "On time") { huxleyCallingPoint.scheduledTime } else { d }
+    })
+    val departureTime = huxleyCallingPoint.actualTime.map(d => {
+      if (d == "On time") { huxleyCallingPoint.scheduledTime } else { d }
+    })
+    val timesAreExpected = huxleyCallingPoint.expectedTime.isDefined
     PlatformCallingPoint(huxleyCallingPoint.crs, arrivalTime, departureTime, timesAreExpected)
   }
 }

@@ -1,6 +1,6 @@
 package hornby.models.platform
 
-import hornby.models.huxley.DetailedService
+import hornby.models.huxley.{CallingPoint, DetailedService}
 import play.api.libs.json._
 
 case class Service(
@@ -17,12 +17,27 @@ object Service {
   def convert(huxleyService: DetailedService): Service = {
     val pcp = huxleyService.previousCallingPoints.getOrElse(Seq())
     val scp = huxleyService.subsequentCallingPoints.getOrElse(Seq())
-    val callingAt = pcp ++ scp
     val isOrigin = pcp.isEmpty
     val isDestination = scp.isEmpty
     val origin = if (isOrigin) { huxleyService.crs } else { pcp.head.crs }
     val destination = if (isDestination) { huxleyService.crs } else { scp.last.crs }
-    // TODO: Need to add to calling points if isOrigin or isDestination
+    val callingAt = if (isOrigin) {
+      val originCallingPoint = CallingPoint(
+        huxleyService.crs,
+        huxleyService.scheduledDepartureTime.getOrElse(""),
+        actualTime = huxleyService.expectedDepartureTime
+      )
+      Seq(originCallingPoint) ++ pcp ++ scp
+    } else if (isDestination) {
+      val destinationCallingPoint = CallingPoint(
+        huxleyService.crs,
+        huxleyService.scheduledArrivalTime.getOrElse(""),
+        expectedTime = huxleyService.expectedArrivalTime
+      )
+      pcp ++ scp ++ Seq(destinationCallingPoint)
+    } else {
+      pcp ++ scp
+    }
     Service(
       huxleyService.platform,
       origin,
