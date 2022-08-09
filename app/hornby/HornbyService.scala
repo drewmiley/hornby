@@ -70,13 +70,8 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   def getNextTrainsOnPlatforms(stationName: String) = {
     val getCRSByQuery: Future[Seq[StationCRS]] = ws.url(s"$apiBase/crs/$stationName").get()
       .map { response => Json.parse(response.body).as[Seq[StationCRS]] }
-//    TODO: Can I avoid this flatMap here?
-    getCRSByQuery flatMap (crsStations => {
-      if (crsStations.nonEmpty && crsStations.head.stationName == stationName) {
-        getNextTrainsOnPlatformsForCRS(crsStations.head.crsCode).map(Some(_))
-      } else {
-        Future.successful(None)
-      }
-    })
+    getCRSByQuery map ({
+      case crsStations@crsList if crsList.nonEmpty && crsList.head.stationName == stationName => crsStations.head.crsCode
+    }) flatMap getNextTrainsOnPlatformsForCRS
   }
 }
