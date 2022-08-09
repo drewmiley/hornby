@@ -54,26 +54,24 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
     val uniqueServiceIDs: Future[Seq[String]] = for {
       arrivals <- getArrivals(crs)
       departures <- getDepartures(crs)
-      arrivalServices <- Future(arrivals.services.getOrElse(Seq()))
-      departureServices <- Future(departures.services.getOrElse(Seq()))
-    } yield (arrivalServices ++ departureServices).map(_.serviceID).distinct
-    val detailedServices: Future[Seq[DetailedService]] = uniqueServiceIDs
-      .flatMap(serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
-    detailedServices.flatMap(huxleyServices => {
+    } yield (arrivals.services.getOrElse(Seq()) ++ departures.services.getOrElse(Seq())).map(_.serviceID).distinct
+    val detailedServices: Future[Seq[DetailedService]] = uniqueServiceIDs flatMap (serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
+    detailedServices map (huxleyServices => {
       val platformServices = huxleyServices
         .groupBy(_.platform)
         .values
         .map(_.head)
         .map(Service.convert)
         .toSeq
-      Future.successful(Station(crs, platformServices))
+      Station(crs, platformServices)
     })
   }
 
   def getNextTrainsOnPlatforms(stationName: String) = {
     val getCRSByQuery: Future[Seq[StationCRS]] = ws.url(s"$apiBase/crs/$stationName").get()
       .map { response => Json.parse(response.body).as[Seq[StationCRS]] }
-    getCRSByQuery.flatMap(crsStations => {
+//    TODO: Can I avoid this flatMap here?
+    getCRSByQuery flatMap (crsStations => {
       if (crsStations.nonEmpty && crsStations.head.stationName == stationName) {
         getNextTrainsOnPlatformsForCRS(crsStations.head.crsCode).map(Some(_))
       } else {

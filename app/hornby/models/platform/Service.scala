@@ -19,8 +19,8 @@ object Service {
     val scp = huxleyService.subsequentCallingPoints.getOrElse(Seq())
     val isOrigin = pcp.isEmpty
     val isDestination = scp.isEmpty
-    val origin = if (isOrigin) { huxleyService.crs } else { pcp.head.crs }
-    val destination = if (isDestination) { huxleyService.crs } else { scp.last.crs }
+//    TODO: Can I avoid this if/else?
+//    Maybe with a case match
     val callingAt = if (isOrigin) {
       val originCallingPoint = CallingPoint(
         huxleyService.crs,
@@ -40,8 +40,8 @@ object Service {
     }
     Service(
       huxleyService.platform,
-      origin,
-      destination,
+      if (isOrigin) { huxleyService.crs } else { pcp.head.crs },
+      if (isDestination) { huxleyService.crs } else { scp.last.crs },
       callingAt.map(PlatformCallingPoint.convert)
     )
   }
