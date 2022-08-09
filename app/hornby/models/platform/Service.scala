@@ -28,8 +28,12 @@ object Service {
     val destinationCallingPoint = Option(isDestination) collect { case true =>
       CallingPoint(huxleyService.crs, huxleyService.scheduledArrivalTime.getOrElse(""), expectedTime = huxleyService.expectedArrivalTime)
     }
-//    TODO: Do this in a way not involving getOrElse
-    val callingAt = originCallingPoint.map(Seq(_)).getOrElse(Seq()) ++ huxleyService.previousCallingPoints.getOrElse(Seq()) ++ huxleyService.subsequentCallingPoints.getOrElse(Seq()) ++ destinationCallingPoint.map(Seq(_)).getOrElse(Seq())
+    val callingAt = Seq(
+      originCallingPoint.map(Seq(_)),
+      huxleyService.previousCallingPoints,
+      huxleyService.subsequentCallingPoints,
+      destinationCallingPoint.map(Seq(_))
+    ).flatMap(a => a.getOrElse(Seq()))
     Service(
       huxleyService.platform,
       if (isOrigin) { huxleyService.crs } else { huxleyService.previousCallingPoints.getOrElse(Seq()).head.crs },
