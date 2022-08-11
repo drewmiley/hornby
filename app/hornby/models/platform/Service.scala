@@ -33,7 +33,7 @@ object Service {
       huxleyService.previousCallingPoints,
       huxleyService.subsequentCallingPoints,
       destinationCallingPoint.map(Seq(_))
-    ).flatMap(a => a.getOrElse(Seq()))
+    ).flatMap(d => d.getOrElse(Seq()))
     Service(
       huxleyService.platform,
       if (isOrigin) { huxleyService.crs } else { huxleyService.previousCallingPoints.getOrElse(Seq()).head.crs },

@@ -54,8 +54,8 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
     val uniqueServiceIDs: Future[Seq[String]] = for {
       arrivals <- getArrivals(crs)
       departures <- getDepartures(crs)
-    } yield (arrivals.services.getOrElse(Seq()) ++ departures.services.getOrElse(Seq())).map(_.serviceID).distinct
-    val detailedServices: Future[Seq[DetailedService]] = uniqueServiceIDs flatMap (serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)))
+    } yield Seq(arrivals.services, departures.services).flatMap(d => d.getOrElse(Seq())).map(_.serviceID).distinct
+    val detailedServices: Future[Seq[DetailedService]] = uniqueServiceIDs flatMap { serviceIDs => Future.sequence(serviceIDs.map(getDetailedServiceByID)) }
     detailedServices map (huxleyServices => {
       val platformServices = huxleyServices
         .groupBy(_.platform)
@@ -70,8 +70,8 @@ class HornbyService @Inject()(ws: WSClient, @NamedCache("session-cache") cache: 
   def getNextTrainsOnPlatforms(stationName: String) = {
     val getCRSByQuery: Future[Seq[StationCRS]] = ws.url(s"$apiBase/crs/$stationName").get()
       .map { response => Json.parse(response.body).as[Seq[StationCRS]] }
-    getCRSByQuery map ({
+    getCRSByQuery map {
       case crsStations@crsList if crsList.nonEmpty && crsList.head.stationName == stationName => crsStations.head.crsCode
-    }) flatMap getNextTrainsOnPlatformsForCRS
+    } flatMap getNextTrainsOnPlatformsForCRS
   }
 }
